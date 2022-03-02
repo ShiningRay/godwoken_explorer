@@ -130,7 +130,7 @@ defmodule GodwokenExplorer.Transaction do
         type: type,
         account_id: account_id
       })
-      when type == :user do
+      when type in [:eth_user, :tron_user] do
     from(t in Transaction,
       where: t.from_account_id == ^account_id,
       select: t.hash
@@ -189,7 +189,7 @@ defmodule GodwokenExplorer.Transaction do
         %{type: type, account_id: account_id},
         paging_options
       )
-      when type == :user do
+      when type in [:eth_user, :tron_user] do
     condition =
       if account_id in @huge_data_user_account_ids do
         datetime = Timex.now() |> Timex.shift(days: -5)
@@ -207,8 +207,7 @@ defmodule GodwokenExplorer.Transaction do
 
   def account_transactions_data(paging_options) do
     datetime = Timex.now() |> Timex.shift(days: -5)
-    condition =
-      dynamic([t], t.inserted_at > ^datetime)
+    condition = dynamic([t], t.inserted_at > ^datetime)
 
     tx_hashes =
       list_tx_hash_by_transaction_query(condition)
@@ -218,7 +217,8 @@ defmodule GodwokenExplorer.Transaction do
   end
 
   defp parse_result(tx_hashes, paging_options) do
-    tx_hashes_struct = Repo.paginate(tx_hashes, page: paging_options[:page], page_size: paging_options[:page_size])
+    tx_hashes_struct =
+      Repo.paginate(tx_hashes, page: paging_options[:page], page_size: paging_options[:page_size])
 
     results =
       list_transaction_by_tx_hash(tx_hashes_struct.entries)
