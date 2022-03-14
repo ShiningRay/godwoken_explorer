@@ -189,7 +189,7 @@ defmodule GodwokenExplorer.Account do
         if is_nil(udt) do
           %{
             sudt: %{
-              name: "Unkown##{id}"
+              name: "Unknown##{id}"
             }
           }
         else
@@ -204,7 +204,7 @@ defmodule GodwokenExplorer.Account do
 
           %{
             sudt: %{
-              name: udt.name || "Unkown##{id}",
+              name: udt.name || "Unknown##{id}",
               symbol: udt.symbol,
               icon: udt.icon,
               decimal: udt.decimal,
